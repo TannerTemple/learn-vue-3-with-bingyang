@@ -1,67 +1,28 @@
 <template>
   <h1>{{ message }}</h1>
-  <img v-bind:src="imageUrl" alt="" />
-  <br />
-
-  <!-- shorthand for v-bind -->
-  <img :src="imageUrl" alt="" />
-  <br />
-
-  <button @click="changeImg">Change image</button>
-
-  <br />
-
-  <hr />
-
-  <input type="text" :value="defaultInputText" />
-
-  <hr />
-
-  <p :class="className">Harry Potter</p>
-
-  <!-- define a JS object in :class -->
-  <p :class="{ inactive: isInactive, center: isCenter }">
-    <!-- if you think embedding a JS object in HTML is verbose, you can choose to move the object to the script, 
-        give it a name, and only put the JS object name in :class -->
-    Harry Potter
+  <p>
+    What has keys but can't open locks, space but no room, and you can enter but
+    can't go outside? What am I?
   </p>
 
-  <!-- define a JS array in :class -->
-  <p :class="['active', 'center']">Harry Potter</p>
+  <button style="width: 200px" @click="showAnswer = !showAnswer">
+    {{ !showAnswer ? 'Show me the answer!' : 'Hide the answer!' }}
+  </button>
+
+  <div v-if="showAnswer">A keyboard.</div>
+
+  <div v-show="showAnswer">A keyboard.</div>
+
+  <!-- <div v-if="Math.random() > 0.5">Now you see me</div>
+  <div v-else>Now you don't</div> -->
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-let message = 'Hello, v-bind!'
-let imageUrl = ref('public/img/banner_1.jpg')
+let message = ref('Hello, v-if!')
 
-function changeImg() {
-  imageUrl.value = 'public/img/banner_2.jpg'
-}
-
-let defaultInputText = 'Write something here...'
-
-let className = ref('active')
-let isInactive = ref(true)
-let isCenter = ref(false)
+let showAnswer = ref(false)
 </script>
 
-<style scoped>
-img {
-  max-width: 300px;
-}
-
-.active {
-  color: green;
-}
-
-.inactive {
-  color: red;
-  text-decoration: line-through;
-}
-
-.center {
-  text-align: center;
-}
-</style>
+<style scoped></style>
