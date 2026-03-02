@@ -1,67 +1,62 @@
 <template>
   <h1>{{ message }}</h1>
-  <img v-bind:src="imageUrl" alt="" />
-  <br />
-
-  <!-- shorthand for v-bind -->
-  <img :src="imageUrl" alt="" />
-  <br />
-
-  <button @click="changeImg">Change image</button>
-
-  <br />
+  <button @click="sortUsersByAge">Sort users by age</button>
+  <ul>
+    <li v-for="(user, index) in users" :key="user.id">
+      {{ index }} - {{ user.id }} - {{ user.name }} - {{ user.age }} -
+      {{ user.isActive }}
+    </li>
+  </ul>
 
   <hr />
 
-  <input type="text" :value="defaultInputText" />
+  <table>
+    <tr>
+      <th>Index</th>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Operation</th>
+    </tr>
+    <tr v-for="(user, index) in users" :key="user.id">
+      <td>{{ index }}</td>
+      <td>{{ user.id }}</td>
+      <td :class="{ inactive: !user.isActive }">{{ user.name }}</td>
+      <td>{{ user.age }}</td>
+      <td>
+        <button @click="user.isActive = !user.isActive">
+          {{ user.isActive ? 'Deactivate' : 'Restore' }}
+        </button>
+      </td>
+    </tr>
+  </table>
 
   <hr />
-
-  <p :class="className">Harry Potter</p>
-
-  <!-- define a JS object in :class -->
-  <p :class="{ inactive: isInactive, center: isCenter }">
-    <!-- if you think embedding a JS object in HTML is verbose, you can choose to move the object to the script, 
-        give it a name, and only put the JS object name in :class -->
-    Harry Potter
-  </p>
-
-  <!-- define a JS array in :class -->
-  <p :class="['active', 'center']">Harry Potter</p>
+  <p>Use v-for to iterate through the properties of an object:</p>
+  <div v-for="(value, key, index) in users[0]">
+    {{ index }} - {{ key }}: {{ value }}
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-let message = 'Hello, v-bind!'
-let imageUrl = ref('public/img/banner_1.jpg')
+let message = ref('Hello, v-for!')
 
-function changeImg() {
-  imageUrl.value = 'public/img/banner_2.jpg'
+const users = ref([
+  { id: 1001, name: 'John Smith', age: 26, isActive: false },
+  { id: 1002, name: 'Tom Doe', age: 16, isActive: false },
+  { id: 1003, name: 'Frankin Wong', age: 18, isActive: true }
+])
+
+function sortUsersByAge() {
+  users.value.sort((a, b) => a.age - b.age)
 }
-
-let defaultInputText = 'Write something here...'
-
-let className = ref('active')
-let isInactive = ref(true)
-let isCenter = ref(false)
 </script>
 
 <style scoped>
-img {
-  max-width: 300px;
-}
-
-.active {
-  color: green;
-}
-
 .inactive {
   color: red;
   text-decoration: line-through;
-}
-
-.center {
-  text-align: center;
 }
 </style>
