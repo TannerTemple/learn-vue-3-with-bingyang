@@ -14,11 +14,7 @@
                         <div class="item-actions">
                             <div class="quantity-selector">
                                 <button class="quantity-change-button">−</button>
-                                <input 
-                                type="text" 
-                                class="quantity-input" 
-                                :value="shoppingCartItems[0].quantity" 
-                                aria-label="quantity">
+                                <input type="text" class="quantity-input" :value="shoppingCartItems[0].quantity" aria-label="quantity">
                                 <button class="quantity-change-button">+</button>
                             </div>
                             <button class="remove-item">✕</button>
@@ -100,13 +96,11 @@
             </div>
             <div class="order-summary">
                 <h2>Order summary</h2>
-                <button class="toggle-details-button" @click="hideDetails = !hideDetails">
-                    {{ hideDetails ? 'Show' : 'Hide' }} Details
-                </button>
-                <div :class="{ 'hide-order-details': hideDetails }">
+                <button class="toggle-details-button" @click="hideDetails = !hideDetails">Hide Details</button>
+                <div class="">
                     <div class="summary-item">
                         <span>Subtotal</span>
-                        <span>$13900</span>
+                        <span>${{ subtotal }}</span>
                     </div>
                     <div class="summary-item">
                         <span>Shipping estimate</span>
@@ -114,12 +108,12 @@
                     </div>
                     <div class="summary-item">
                         <span>Tax estimate</span>
-                        <span>$1112</span>
+                        <span>${{ tax }}</span>
                     </div>
                 </div>
                 <div class="summary-total">
                     <strong>Order total</strong>
-                    <strong>$15112</strong>
+                    <strong>${{ calculateTotal() }}</strong>
                 </div>
                 <button class="checkout-button">Checkout</button>
             </div>
@@ -129,56 +123,66 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 
-import { ref } from 'vue'
+let username = 'Harry'
 
-  let username = 'Harry'
+let shoppingCartItems = [
+  {
+    id: 1,
+    name: 'Dragon Liver',
+    price: 1500,
+    quantity: 3,
+    inStock: true,
+    image: 'public/img/dragonliver.png',
+  },
+  {
+    id: 2,
+    name: 'Golden Snitch',
+    price: 600,
+    quantity: 2,
+    inStock: true,
+    image: 'public/img/goldenSnitch.png',
+  },
+  {
+    id: 3,
+    name: 'Unicorn Tail Hair',
+    price: 1200,
+    quantity: 1,
+    inStock: false,
+    image: 'public/img/unicornTailHair.png',
+  },
+  {
+    id: 4,
+    name: 'Wand',
+    price: 2000,
+    quantity: 1,
+    inStock: true,
+    image: 'public/img/wand.jpg',
+  },
+  {
+    id: 5,
+    name: 'Nimbus 2000',
+    price: 5000,
+    quantity: 1,
+    inStock: true,
+    image: 'public/img/Nimbus2000.jpg',
+  },
+]
 
-  let shoppingCartItems = [
-    {
-      id: 1,
-      name: 'Dragon Liver',
-      price: 1500,
-      quantity: 3,
-      inStock: true,
-      image: 'public/img/dragonliver.png',
-    },
-    {
-      id: 2,
-      name: 'Golden Snitch',
-      price: 600,
-      quantity: 2,
-      inStock: true,
-      image: 'public/img/goldenSnitch.png',
-    },
-    {
-      id: 3,
-      name: 'Unicorn Tail Hair',
-      price: 1200,
-      quantity: 1,
-      inStock: false, // on backorder
-      image: 'public/img/unicornTailHair.png',
-    },
-    {
-      id: 4,
-      name: 'Wand',
-      price: 2000,
-      quantity: 1,
-      inStock: true,
-      image: 'public/img/wand.jpg',
-    },
-    {
-      id: 5,
-      name: 'Nimbus 2000',
-      price: 5000,
-      quantity: 1,
-      inStock: true,
-      image: 'public/img/Nimbus2000.jpg',
-    },
-  ]
+let hideDetails = ref(false)
 
-  let hideDetails = ref(false)
+let subtotal = computed(() => {
+  return shoppingCartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+})
 
+let tax = computed(() => {
+  return Math.round(subtotal.value * 0.08)
+})
+
+function calculateTotal() {
+  return subtotal.value + 100 + tax.value
+}
 
 </script>
 
@@ -269,7 +273,6 @@ import { ref } from 'vue'
             border: 1px solid #c1c1c1;
             border-radius: 8px;
             overflow: hidden;
-            /* Ensures the children do not break the rounded corners */
         }
 
         .quantity-change-button {
@@ -324,7 +327,6 @@ import { ref } from 'vue'
 
         .hide-order-details {
             display: none;
-            /* Hide details by default */
         }
 
         .summary-item {
@@ -352,7 +354,6 @@ import { ref } from 'vue'
             cursor: pointer;
             margin-top: 10px;
             transition: all 0.2s;
-            /* smooth transition in and out */
         }
 
         .checkout-button:hover {
