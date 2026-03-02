@@ -4,7 +4,7 @@
         <div class="cart-container">
             <div class="cart-list">
                 <div class="cart-list-item">
-                    <img src="@/assets/DragonLiver.png" alt="Dragon Liver" class="product-image">
+                    <img :src="shoppingCartItems[0].image" :alt="shoppingCartItems[0].name" class="product-image">
                     <div class="item-details-with-actions">
                         <div class="item-details">
                             <h2>{{ shoppingCartItems[0].name }}</h2>
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="cart-list-item">
-                    <img src="@/assets/GoldenSnitch.png" alt="Golden Snitch" class="product-image">
+                    <img :src="shoppingCartItems[1].image" :alt="shoppingCartItems[1].name" class="product-image">
                     <div class="item-details-with-actions">
                         <div class="item-details">
                             <h2>{{ shoppingCartItems[1].name }}</h2>
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="cart-list-item">
-                    <img src="@/assets/UnicornTailHair.png" alt="Unicorn Tail Hair" class="product-image">
+                    <img :src="shoppingCartItems[2].image" :alt="shoppingCartItems[2].name" class="product-image">
                     <div class="item-details-with-actions">
                         <div class="item-details">
                             <h2>{{ shoppingCartItems[2].name }}</h2>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <div class="cart-list-item">
-                    <img src="@/assets/Wand.jpg" alt="Wand" class="product-image">
+                    <img :src="shoppingCartItems[3].image" :alt="shoppingCartItems[3].name" class="product-image">
                     <div class="item-details-with-actions">
                         <div class="item-details">
                             <h2>{{ shoppingCartItems[3].name }}</h2>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="cart-list-item">
-                    <img src="@/assets/Nimbus2000.jpg" alt="Nimbus 2000" class="product-image">
+                    <img :src="shoppingCartItems[4].image" :alt="shoppingCartItems[4].name" class="product-image">
                     <div class="item-details-with-actions">
                         <div class="item-details">
                             <h2>{{ shoppingCartItems[4].name }}</h2>
@@ -133,6 +133,7 @@
       price: 1500,
       quantity: 3,
       inStock: true,
+      image: 'public/img/dragon-liver.jpg',
     },
     {
       id: 2,
@@ -140,6 +141,7 @@
       price: 600,
       quantity: 2,
       inStock: true,
+      image: 'public/img/golden-snitch.jpg',
     },
     {
       id: 3,
@@ -147,6 +149,7 @@
       price: 1200,
       quantity: 1,
       inStock: false, // on backorder
+      image: 'public/img/unicorn-tail.jpg',
     },
     {
       id: 4,
@@ -154,6 +157,7 @@
       price: 2000,
       quantity: 1,
       inStock: true,
+      image: 'public/img/wand.jpg',
     },
     {
       id: 5,
@@ -161,6 +165,7 @@
       price: 5000,
       quantity: 1,
       inStock: true,
+      image: 'public/img/nimbus-2000.jpg',
     },
   ]
 
