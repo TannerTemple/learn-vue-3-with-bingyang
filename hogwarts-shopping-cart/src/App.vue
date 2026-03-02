@@ -96,11 +96,11 @@
             </div>
             <div class="order-summary">
                 <h2>Order summary</h2>
-                <button class="toggle-details-button" @click="hideDetails = !hideDetails">Hide Details</button>
-                <div class="">
+                <button class="toggle-details-button" @click="hideDetails = !hideDetails">{{ hideDetails ? 'Show Details' : 'Hide Details' }}</button>
+                <div v-if="!hideDetails">
                     <div class="summary-item">
                         <span>Subtotal</span>
-                        <span>${{ subtotal }}</span>
+                        <span>$13900</span>
                     </div>
                     <div class="summary-item">
                         <span>Shipping estimate</span>
@@ -108,12 +108,12 @@
                     </div>
                     <div class="summary-item">
                         <span>Tax estimate</span>
-                        <span>${{ tax }}</span>
+                        <span>$1112</span>
                     </div>
                 </div>
                 <div class="summary-total">
                     <strong>Order total</strong>
-                    <strong>${{ calculateTotal() }}</strong>
+                    <strong>$15112</strong>
                 </div>
                 <button class="checkout-button">Checkout</button>
             </div>
@@ -123,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 let username = 'Harry'
 
@@ -134,7 +134,7 @@ let shoppingCartItems = [
     price: 1500,
     quantity: 3,
     inStock: true,
-    image: 'public/img/dragonliver.png',
+    image: '/img/DragonLiver.png',
   },
   {
     id: 2,
@@ -142,7 +142,7 @@ let shoppingCartItems = [
     price: 600,
     quantity: 2,
     inStock: true,
-    image: 'public/img/goldenSnitch.png',
+    image: '/img/GoldenSnitch.png',
   },
   {
     id: 3,
@@ -150,7 +150,7 @@ let shoppingCartItems = [
     price: 1200,
     quantity: 1,
     inStock: false,
-    image: 'public/img/unicornTailHair.png',
+    image: '/img/UnicornTailHair.png',
   },
   {
     id: 4,
@@ -158,7 +158,7 @@ let shoppingCartItems = [
     price: 2000,
     quantity: 1,
     inStock: true,
-    image: 'public/img/wand.jpg',
+    image: '/img/Wand.jpg',
   },
   {
     id: 5,
@@ -166,23 +166,11 @@ let shoppingCartItems = [
     price: 5000,
     quantity: 1,
     inStock: true,
-    image: 'public/img/Nimbus2000.jpg',
+    image: '/img/Nimbus2000.jpg',
   },
 ]
 
 let hideDetails = ref(false)
-
-let subtotal = computed(() => {
-  return shoppingCartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-})
-
-let tax = computed(() => {
-  return Math.round(subtotal.value * 0.08)
-})
-
-function calculateTotal() {
-  return subtotal.value + 100 + tax.value
-}
 
 </script>
 
