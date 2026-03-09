@@ -1,95 +1,37 @@
 <template>
-  <h1>{{ message }}</h1>
-  <div>
-    <form @submit.prevent="register">
-      <div>
-        <label for="email">Email:</label>
-        <input
-          id="email"
-          v-model="email"
-          type="email"
-          placeholder="Enter your email"
-        />
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        <input
-          id="password"
-          v-model="password"
-          type="password"
-          placeholder="Create a password"
-        />
-      </div>
-      <button type="submit" :disabled="!isFormValid">Register</button>
-    </form>
-  </div>
-  <hr />
   <div class="card">
-    <h2>Name: {{ wizard1.name }}</h2>
-    <h2>Wand: {{ wizard1.wand }}</h2>
-    <h2>Age: {{ wizard1.age }}</h2>
-    <button @click="wizard1.name = wizard1.name.toUpperCase()">
-      Change name to upper case
-    </button>
-    <button @click="wizard1.wand.core = 'Unicorn hair'">
-      Change wand core
-    </button>
-    <button @click="wizard1.age = 20">Change age</button>
+    <h1 ref="title">Hello, Template Refs!</h1> <!-- need ref title here -->
+    <input type="text" ref="input" />  <!-- need ref input here -->
+    <button @click="printDomElements">Print DOM elements in console log</button>
+    <button @click="changeTitle">Change title</button>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, watchEffect } from 'vue'
-let message = ref('Hello, watchEffect!')
-const email = ref('')
-const password = ref('')
-const isFormValid = ref(false)
+import { onMounted, ref } from 'vue'
 
+// declare a ref to hold the element reference
+// the name must match template ref value
+let title = ref()
+const input = ref()
 
-// here we see that email and password need to be added in array in signature of watch
+//^^^^ doing this above is the same as using getElementById or querySelector to get the element reference in the DOM
 
-// watch([email, password], () => {
-//   const hasEmail = email.value.length > 0
-//   const hasPassword = password.value.length > 0
-//   isFormValid.value = hasEmail && hasPassword
-// })
-
-//in watchEffect, we only need to write the reactive variables we use once and it will track them 
-// and run the function when they change
-watchEffect(() => {
-  console.log('watchEffect')
-  const hasEmail = email.value.length > 0
-  const hasPassword = password.value.length > 0
-  isFormValid.value = hasEmail && hasPassword
-})
-//also is automatically eager ('immediately : true' built in)
-
-const register = () => {
-  alert('Registration successful!')
-  // Registration logic goes here
+function printDomElements() {
+  console.log(title.value)
+  console.log(input.value)
 }
 
-let wizard1 = ref({
-  id: 1001,
-  name: 'Harry Potter',
-  house: 'Gryffindor',
-  age: 17,
-  wand: {
-    core: 'Phoenix feather',
-    wood: 'Holly'
-  }
-})
+function changeTitle() {
+  title.value.innerText = 'Hello world!'
+}
 
-//automatically tracks the reactive variables used in the function and runs when they change
-watchEffect(() => {
-  console.log(wizard1.value.name, wizard1.value.wand.core)
-})
-
-// not deeply reactive, so if we change the wand core, it will not trigger the watchEffect, but if we change the wizard ref, it will trigger the watchEffect
-watchEffect(() => {
-  console.log(wizard1.value)
+//allows the cursor to be active in the input when page loads
+onMounted(() => {
+  input.value.focus() // programmatically focus an input on component mount
 })
 </script>
+
 <style scoped>
 .card {
   background-color: purple;
