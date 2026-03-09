@@ -1,98 +1,162 @@
-<!-- differences between computed properties and methods: 
-      - can do what we did here with methods-->
-
 <template>
   <h1>{{ message }}</h1>
-  <button @click="sortUsersByAge">Sort users by age</button>
-  <br />
-  <!-- if hideInactive if false, dont hide, when button clicked, hide inactive users-->
-  <button @click="hideInactive = !hideInactive">{{ toggleButtonName }}</button>
 
-  <h2>Number of active users (computed property): {{ numberOfActiveUsers }}</h2>
+  <div class="card">
+    <h1>Scenario 1: Watch a "ref(primitive value)"</h1>
+    <h2>Number: {{ number }}</h2>
+    <button @click="number++">Increment number by 1</button>
+  </div>
 
-  <!-- this is important: shows that you can use computed property multiple times and is only invoked once
-        thus, it's more efficient than calling a method multiple times ( bc is cached)  -->
-<!-- 
-  <h2>Number of active users (computed property): {{ numberOfActiveUsers }}</h2>
-  <h2>Number of active users (computed property): {{ numberOfActiveUsers }}</h2> -->
+  <div class="card">
+    <h1>Scenario 2: Watch a property in "ref(object)"</h1>
+    <h2>Name: {{ wizard1.name }}</h2>
+    <h2>Wand: {{ wizard1.wand }}</h2>
+    <button @click="wizard1.name = wizard1.name.toUpperCase()">
+      Change name to upper case
+    </button>
+    <button @click="changeWizard1Wand">Change wand</button>
+    <button @click="wizard1.wand.core = 'Unicorn hair'">
+      Change wand core
+    </button>
+  </div>
 
-  <h2>
-    Number of active users (method call): {{ computeNumberOfActiveUsers() }}
-  </h2>
-  <!-- this shows that each time invoked, method executes -->
-
-  <!-- <h2>
-    Number of active users (method call): {{ computeNumberOfActiveUsers() }}
-  </h2>
-  <h2>
-    Number of active users (method call): {{ computeNumberOfActiveUsers() }}
-  </h2> -->
-  <table>
-    <tr>
-      <th>Index</th>
-      <th>Id</th>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Operation</th>
-    </tr> <!-- instead of just v-for in users, we loop through onlu the filtered users (computed property)
-            without mutating the original user array-->
-    <tr v-for="(user, index) in filteredUsers" :key="user.id">
-      <td>{{ index + 1 }}</td>
-      <td>{{ user.id }}</td>
-      <td :class="{ inactive: !user.isActive }">
-        {{ user.name }}
-      </td>
-      <td>{{ user.age }}</td>
-      <td>
-        <button @click="user.isActive = !user.isActive">
-          {{ user.isActive ? 'Deactivate' : 'Restore' }}
-        </button>
-      </td>
-    </tr>
-  </table>
+  <div class="card">
+    <h1>Scenario 3: Watch a "ref(object)"</h1>
+    <h2>Name: {{ wizard2.name }}</h2>
+    <h2>Wand: {{ wizard2.wand }}</h2>
+    <button @click="wizard2.name = wizard2.name.toUpperCase()">
+      Change name to upper case
+    </button>
+    <button @click="wizard2.wand.core = 'Phoenix feather'">
+      Change wand core
+    </button>
+    <button @click="changeWizard">Change wizard</button>
+  </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { ref, watch } from 'vue'
 
-let message = ref('Hello, Computed Properties!')
+let message = ref('Hello, Watchers!')
 
-const users = ref([
-  { id: 1001, name: 'John Smith', age: 26, isActive: false },
-  { id: 1002, name: 'Tom Doe', age: 16, isActive: false },
-  { id: 1003, name: 'Frankin Wong', age: 18, isActive: true }
-])
+// Scenario 1: Watch a ref(primitive value), this is a common scenario.
+let number = ref(1)
 
-let hideInactive = ref(false)
+const stopWatch = watch(number, (newValue, oldValue) => {
+  // A callback function, called when number is changed.
+  console.log(
+    'Watch a ref(primitive value): number changes',
+    newValue,
+    oldValue
+  )
+  if (newValue >= 5) {
+    stopWatch() //or can do unwatch(number) to stop watching number when it reaches 5 or more.
+  }
+}, {immediate: true}) //3rd arg: immediate: true means the callback function will be called immediately when the watch is created, 
+                      //with the current value of number as newValue and undefined as oldValue.
 
-function sortUsersByAge() {
-  users.value.sort((a, b) => a.age - b.age)
-}
-
-let toggleButtonName = computed(() =>
-  hideInactive.value ? 'Show all' : 'Hide inactive'
-)
-
-//dont compute dom, just do calculation and cache result, only recompute when users.value changes in computed values
-let numberOfActiveUsers = computed(() => {
-  console.log('computed property')
-  return users.value.filter((user) => user.isActive).length
+// Scenario 2: Watch a property in a ref(object)
+let wizard1 = ref({
+  id: 1001,
+  name: 'Harry Potter',
+  house: 'Gryffindor',
+  age: 17,
+  wand: {
+    core: 'Phoenix feather',
+    wood: 'Holly'
+  }
 })
 
-let computeNumberOfActiveUsers = () => {
-  console.log('method call')
-  return users.value.filter((user) => user.isActive).length
+function changeWizard1Wand() {
+  wizard1.value.wand = {
+    core: 'Dragon heartstring',
+    wood: 'Vine'
+  }
 }
 
-//to work in functionality for hiding inactive users and showing active users 
-let filteredUsers = computed(() =>
-  hideInactive.value ? users.value.filter((user) => user.isActive) : users.value
+//how to watch a property in a ref(object) we need use a getter function (method) to 
+// return the property we want to watch, and pass it to watch
+watch(
+  () => wizard1.value.name,
+  (newValue, oldValue) => {
+    console.log(
+      'Watch a property in a ref(object): wizard1 name changes',
+      newValue,
+      oldValue
+    )
+  }
+)
+
+//by default watch only tracks if the full wand value is changed (not just a part)
+//so we add deep: true to watch all the properties of wand
+watch(
+  () => wizard1.value.wand,
+  (newValue, oldValue) => {
+    console.log(
+      'Watch a property in a ref(object): wizard1 wand changes',
+      newValue,
+      oldValue
+    )
+  },
+  { deep: true }
+)
+
+// Scenario 3: Watch a ref(object)
+let wizard2 = ref({
+  id: 1003,
+  name: 'Ron Weasley',
+  house: 'Gryffindor',
+  age: 17,
+  wand: {
+    core: 'Unicorn hair',
+    wood: 'Willow'
+  }
+})
+
+function changeWizard() {
+  wizard2.value = {
+    id: 1002,
+    name: 'Hermione Granger',
+    house: 'Gryffindor',
+    age: 17,
+    wand: {
+      core: 'Dragon heartstring',
+      wood: 'Vine'
+    }
+  }
+}
+
+//bc of deep, triggers watch/console log, but new and old value are equal
+watch(
+  wizard2,
+  (newValue, oldValue) => {
+    console.log('Watch a ref(object): wizard2 changes', newValue, oldValue)
+  },
+  { deep: true }
+)
+
+
+
+
+// Scenario 4: Watch an array of ref(primitive value), a property of a ref(object), and a ref(object)
+watch(
+  [number, () => wizard1.value.name, wizard2],
+  (newValue, oldValue) => {
+    console.log(
+      'Watch an array of ref(primitive value), a property of a ref(object), and a ref(object)'
+    )
+  },
+  {
+    deep: true
+  }
 )
 </script>
 
 <style scoped>
-.inactive {
-  color: red;
-  text-decoration: line-through;
+.card {
+  background-color: purple;
+  color: white;
+  padding: 20px 10px;
+  margin-bottom: 10px;
 }
 </style>
