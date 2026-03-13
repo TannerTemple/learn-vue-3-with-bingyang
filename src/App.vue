@@ -1,67 +1,85 @@
 <template>
-  <h1>{{ message }}</h1>
-  <img v-bind:src="imageUrl" alt="" />
-  <br />
+  <!-- Passing data to child component through custom attributes. -->
+  <BlogPost
+    id="1"
+    blogPostTitle="What is a muggle?"
+    blogPostContent="A muggle is a person who lacks any sort of magical ability..."
+  >
+  </BlogPost>
 
-  <!-- shorthand for v-bind -->
-  <img :src="imageUrl" alt="" />
-  <br />
+  <!-- Can use camel case, but standrard is kebab-case -->
+  <BlogPost
+    id="1"
+    blog-post-title="What is a muggle?"
+    blog-post-content="A muggle is a person who lacks any sort of magical ability..."
+  >
+  </BlogPost>
 
-  <button @click="changeImg">Change image</button>
-
-  <br />
+  <!-- We can use v-bind to pass data in parent component to child component. -->
+  <BlogPost
+    :id="blogPostId"
+    :blog-post-title="blogPostTitle"
+    :blog-post-content="blogPostContent"
+  ></BlogPost>
 
   <hr />
 
-  <input type="text" :value="defaultInputText" />
+  <BlogPost
+    v-for="post in posts"
+    :key="post.id"
+    :id="post.id"
+    :blog-post-title="post.blogPostTitle"
+    :blog-post-content="post.blogPostContent"
+  ></BlogPost>
+  <!-- Think about this, what if a blog post have 10 properties to display, e.g. publish date, author, number of likes etc. This will make the above BlogPost element very lengthy. -->
 
   <hr />
 
-  <p :class="className">Harry Potter</p>
-
-  <!-- define a JS object in :class -->
-  <p :class="{ inactive: isInactive, center: isCenter }">
-    <!-- if you think embedding a JS object in HTML is verbose, you can choose to move the object to the script, 
-        give it a name, and only put the JS object name in :class -->
-    Harry Potter
-  </p>
-
-  <!-- define a JS array in :class -->
-  <p :class="['active', 'center']">Harry Potter</p>
+  <!-- Binding multiple properties using an object. !!! Important, post names must match the prop names in the child component -->
+  <BlogPost v-for="post in posts" :key="post.id" v-bind="post"></BlogPost>
 </template>
 
 <script setup>
+import BlogPost from '@/BlogPost.vue'
 import { ref } from 'vue'
 
-let message = 'Hello, v-bind!'
-let imageUrl = ref('public/img/banner_1.jpg')
+let blogPostId = ref(2)
+let blogPostTitle = ref(
+  'HP and the Cursed Child Broadway production suspended until April'
+)
+let blogPostContent = ref(
+  'Adding to the earlier post, the Broadway production of Harry Potter and the Cursed Child has been...'
+)
 
-function changeImg() {
-  imageUrl.value = 'public/img/banner_2.jpg'
-}
+let posts = ref([
+  {
+    id: 1,
+    blogPostTitle: 'What is a muggle in HP world?',
+    blogPostContent:
+      'A muggle is a person who lacks any sort of magical ability...'
+  },
+  {
+    id: 2,
+    blogPostTitle:
+      'HP and the Cursed Child Broadway production suspended until April',
+    blogPostContent:
+      'Adding to the earlier post, the Broadway production of Harry Potter and the Cursed Child has been...'
+  },
+  {
+    id: 3,
+    blogPostTitle: 'Potter DIY: Make Your Own “Harry Potter Puppet Pal”',
+    blogPostContent:
+      'We all remember those iconic YouTube videos of Harry and the gang and probably couldn’t get “The Mysterious...'
+  },
+  {
+    id: 4,
+    blogPostTitle: 'Fan Project Brings Life to “Harry Potter” in Translation',
+    blogPostContent:
+      'It’s no secret that the Harry Potter series is a global phenomenon, having been translated into over 80 languages to date....'
+  }
+])
 
-let defaultInputText = 'Write something here...'
-
-let className = ref('active')
-let isInactive = ref(true)
-let isCenter = ref(false)
 </script>
 
 <style scoped>
-img {
-  max-width: 300px;
-}
-
-.active {
-  color: green;
-}
-
-.inactive {
-  color: red;
-  text-decoration: line-through;
-}
-
-.center {
-  text-align: center;
-}
 </style>
