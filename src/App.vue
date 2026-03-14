@@ -1,12 +1,20 @@
 <template>
   <BlogPost
-    v-for="post in posts" :key="post.id" v-bind="post" @delete-blog-post="processDeletion"
+    v-for="post in posts" 
+    :key="post.id" 
+    :id="post.id"
+    :blog-post-title="post.blogPostTitle"
+    v-model:blogPostTitle="post.blogPostTitle"
+    v-model:blogPostContent="post.blogPostContent"
+    @delete-blog-post="processDeletion"
   ></BlogPost>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import BlogPost from './BlogPost.vue'
+
+
 
 let posts = ref([
   {
