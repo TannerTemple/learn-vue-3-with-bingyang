@@ -1,67 +1,62 @@
 <template>
-  <h1>{{ message }}</h1>
-  <img v-bind:src="imageUrl" alt="" />
-  <br />
-
-  <!-- shorthand for v-bind -->
-  <img :src="imageUrl" alt="" />
-  <br />
-
-  <button @click="changeImg">Change image</button>
-
-  <br />
+  <StudentList :list="list">
+    <template #default="{ stu }">
+      <span :class="{ cursed: stu.name == 'Harry' }">
+        {{ stu.name }}
+      </span>
+    </template>
+  </StudentList>
 
   <hr />
 
-  <input type="text" :value="defaultInputText" />
-
-  <hr />
-
-  <p :class="className">Harry Potter</p>
-
-  <!-- define a JS object in :class -->
-  <p :class="{ inactive: isInactive, center: isCenter }">
-    <!-- if you think embedding a JS object in HTML is verbose, you can choose to move the object to the script, 
-        give it a name, and only put the JS object name in :class -->
-    Harry Potter
-  </p>
-
-  <!-- define a JS array in :class -->
-  <p :class="['active', 'center']">Harry Potter</p>
+  <el-table :data="todoList" stripe border style="width: 100%">
+    <el-table-column prop="userId" label="User ID" width="180" />
+    <el-table-column prop="id" label="ID" width="180" />
+    <el-table-column prop="title" label="Title" />
+    <el-table-column prop="completed" label="Status">
+      <template #default="{ row }">
+        <el-tag type="success" v-if="row?.completed">Completed</el-tag>
+        <el-tag type="danger" v-else>Incomplete</el-tag>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import StudentList from './StudentList.vue'
 
-let message = 'Hello, v-bind!'
-let imageUrl = ref('public/img/banner_1.jpg')
+const list = ref([
+  {
+    id: 1,
+    name: 'Harry'
+  },
+  {
+    id: 2,
+    name: 'Hermione'
+  },
+  {
+    id: 3,
+    name: 'Ron'
+  }
+])
 
-function changeImg() {
-  imageUrl.value = 'public/img/banner_2.jpg'
+const todoList = ref([])
+
+async function getTodoList() {
+  const response = await fetch('https://jsonplaceholder.typicode.com/todos')
+  const data = await response.json()
+  console.log(data)
+  todoList.value = data
 }
 
-let defaultInputText = 'Write something here...'
-
-let className = ref('active')
-let isInactive = ref(true)
-let isCenter = ref(false)
+onMounted(() => {
+  getTodoList()
+})
 </script>
 
 <style scoped>
-img {
-  max-width: 300px;
-}
-
-.active {
-  color: green;
-}
-
-.inactive {
+.cursed {
   color: red;
-  text-decoration: line-through;
-}
-
-.center {
-  text-align: center;
 }
 </style>
