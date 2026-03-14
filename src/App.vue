@@ -1,67 +1,25 @@
 <template>
-  <h1>{{ message }}</h1>
-  <img v-bind:src="imageUrl" alt="" />
-  <br />
-
-  <!-- shorthand for v-bind -->
-  <img :src="imageUrl" alt="" />
-  <br />
-
-  <button @click="changeImg">Change image</button>
-
-  <br />
-
-  <hr />
-
-  <input type="text" :value="defaultInputText" />
-
-  <hr />
-
-  <p :class="className">Harry Potter</p>
-
-  <!-- define a JS object in :class -->
-  <p :class="{ inactive: isInactive, center: isCenter }">
-    <!-- if you think embedding a JS object in HTML is verbose, you can choose to move the object to the script, 
-        give it a name, and only put the JS object name in :class -->
-    Harry Potter
-  </p>
-
-  <!-- define a JS array in :class -->
-  <p :class="['active', 'center']">Harry Potter</p>
+  <h1>Message: {{ message }}</h1>
+  <div style="background-color: orange; padding-left: 10px">
+    <ComponentA></ComponentA>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, provide, readonly } from 'vue'
+import ComponentA from './ComponentA.vue'
 
-let message = 'Hello, v-bind!'
-let imageUrl = ref('public/img/banner_1.jpg')
+let message = ref('Hello, Provide/inject!')
 
-function changeImg() {
-  imageUrl.value = 'public/img/banner_2.jpg'
+
+function updateMessage() {
+  message.value = 'Hello, Provide/inject! Updated.'
 }
 
-let defaultInputText = 'Write something here...'
+provide('msg', { message, updateMessage })
 
-let className = ref('active')
-let isInactive = ref(true)
-let isCenter = ref(false)
+let count = ref(0)
+provide('read-only-count', readonly(count))
 </script>
 
-<style scoped>
-img {
-  max-width: 300px;
-}
-
-.active {
-  color: green;
-}
-
-.inactive {
-  color: red;
-  text-decoration: line-through;
-}
-
-.center {
-  text-align: center;
-}
-</style>
+<style scoped></style>
